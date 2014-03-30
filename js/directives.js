@@ -11,13 +11,15 @@
                 replace: true,
                 template: '<span>{{ name.lastName }} {{ name.firstName[0] }}.{{ name.middleName[0] }}.</span>'
             };
-        }).directive("specialistSelector", ["$rootScope", function ($rootScope) {
+        }).directive("specialistSelector", [ function () {
             return {
                 restrict: "AE",
                 scope: {
                     specialists: "=",
                     specialityGroups: "=",
-                    specialities: "="
+                    specialities: "=",
+                    onSelected: '&onSelected',
+                    onDeselected: '&onDeselected'
                 },
                 templateUrl: 'templates/specialist-selector.html',
                 controller: function ($scope) {
@@ -57,8 +59,9 @@
                             }
                             item.selected = speciality.selected;
                         });
-                        var action = speciality.selected ? "selected" : "deselected";
-                        $rootScope.$emit("specialists." + action, actuallyChanged);
+                        console.log(actuallyChanged)
+                        if (speciality.selected && $scope.onSelected) $scope.onSelected()(actuallyChanged);
+                        if (!speciality.selected && $scope.onDeselected) $scope.onDeselected()(actuallyChanged);
                     };
 
                     $scope.checkSelectAll = function (specialist, speciality) {
@@ -66,8 +69,9 @@
                         speciality.selected = $.grep(specialists, function (item) {
                             return item.selected;
                         }).length == specialists.length;
-                        var action = specialist.selected ? "selected" : "deselected";
-                        $rootScope.$emit("specialists." + action, [specialist]);
+
+                        if (specialist.selected && $scope.onSelected) $scope.onSelected()([specialist]);
+                        if (!specialist.selected && $scope.onDeselected) $scope.onDeselected()([specialist]);
                     };
 
                     $scope.getSelected = function () {

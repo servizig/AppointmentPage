@@ -57,7 +57,7 @@
                 $scope.schedules = [];
                 var previouslySelectedLength = 0;
 
-                $rootScope.$on("specialists.selected", function (event, specialists) {
+                $scope.onSelected = function (specialists) {
                     var actuallySelected = $scope.getActuallySelectedSpecialists();
                     if (previouslySelectedLength == 0 && actuallySelected.length > 0) {
                         $scope.schedules = [];
@@ -66,9 +66,9 @@
                         loadSchedules(specialists);
                     }
                     previouslySelectedLength = actuallySelected.length;
-                });
+                };
 
-                $rootScope.$on("specialists.deselected", function (event, specialists) {
+                $scope.onDeselected = function (specialists) {
                     var actuallySelectedLength = $scope.getActuallySelectedSpecialists().length;
                     if (actuallySelectedLength == 0) {
                         $scope.schedules = [];
@@ -91,7 +91,8 @@
                     });
                     $scope.schedules = newSchedules;
                     previouslySelectedLength = actuallySelectedLength;
-                });
+                };
+
                 $scope.dateSpan = 1;
 
                 $scope.isDateSpan = function (dateSpan) {
