@@ -1,6 +1,19 @@
+<div class="dropdown">
+  <ul class="dropdown-menu ln-context-menu" role="menu" aria-labelledby="dropdownMenu1">
+    <li role="presentation"><a class="ln-context-action ln-action-create" role="menuitem ln-context-action " tabindex="-1" href="#">Создать запись</a></li>
+    <li role="presentation"><a class="ln-context-action ln-action-record-view" role="menuitem" tabindex="-1" href="#">Просмотр</a></li>
+    <li role="presentation"><a class="ln-context-action ln-action-record-change" role="menuitem" tabindex="-1" href="#">Изменить</a></li>
+    <li role="presentation"><a class="ln-context-action ln-action-record-cancel" role="menuitem" tabindex="-1" href="#">Отменить</a></li>
+    <li role="presentation"><a class="ln-context-action ln-action-record-copy" role="menuitem" tabindex="-1" href="#">Копировать</a></li>
+    <li role="presentation"><a class="ln-context-action ln-action-record-cut" role="menuitem" tabindex="-1" href="#">Вырезать</a></li>
+    <li role="presentation"><a class="ln-context-action ln-action-paste" role="menuitem" tabindex="-1" href="#">Вставить</a></li>
+  </ul>
+</div>
 <div class="ln-complex-resource-wrapper">
     <div class="ln-complex-resource expanded"
-         ng-repeat="schedule in schedules | orderBy : ['date', 'place.facility.shortName']">
+        ng-class="'ln-complex-resource-' + schedule.type"
+        ng-repeat="schedule in schedules | orderBy : ['date', 'place.facility.shortName']">
+        <div class="ln-complex-resource-spacer"></div>
         <div class="ln-complex-resource-header">
             <div class="ln-complex-resource-day">{{ schedule.date | date:"EEE. dd MMM" }}</div>
             <div class="ln-complex-resource-name">
@@ -12,7 +25,7 @@
                 №{{ schedule.place.facility.number }},
                 (к.{{ schedule.place.roomNumber }})
             </div>
-            <div class="ln-complex-resource-schedule">
+            <div class="ln-complex-resource-schedule" ng-show="schedule.type == 1">
                 <div class="ln-expanded">
                     <div>
                         <button class="ln-time-scroll" data-start-time="{{ schedule.workBeginTime.toString() }}">{{ schedule.workBeginTime.toString() }}-{{schedule.workEndTime.toString() }}</button>
@@ -26,17 +39,25 @@
                 <div class="ln-collapsed">
                     Врач работает
                 </div>
+
+            </div>
+            <div class="ln-complex-resource-schedule" ng-show="schedule.type == 2">
+                {{ schedule.cancelReason }}
             </div>
         </div>
         <div class="ln-complex-resource-body">
-            <div class="ln-complex-resource-cell" ng-class="'ln-complex-resource-cell-' + slot.type" ng-repeat="slot in schedule.slots" data-start-time="{{ slot.time.toString() }}">
-
+            <div class="ln-complex-resource-cell" ng-class="getSlotClasses(slot)" ng-repeat="slot in schedule.slots" data-start-time="{{ slot.time.toString() }}">
                 <span ng-show="slot.type == 1">Врач не принимает</span>
                 <span ng-show="slot.type == 5">{{slot.reason }}</span>
-                <div ng-show="slot.type == 10">
-                    <span class="time">{{ slot.time.toString() }}</span>
-                    <div class="ln-record" ng-repeat="record in slot.records" ng-style="{ width: 110 / slot.records.length + 'px'}">
-                        {{ record.patientName }}
+                <div ng-show="slot.type == 10" class="ln-records-wrapper">
+                    <div class="time">{{ slot.time.toString() }}</div>
+                    <div class="ln-records">
+                        <div class="ln-record"
+                            ng-repeat="record in slot.records"
+                            ng-style="{ width: 110 / slot.records.length + 'px'}"
+                            title="{{ record.patientName }}">
+                            {{ record.patientName }}
+                        </div>
                     </div>
                 </div>
             </div>

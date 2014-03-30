@@ -1,8 +1,8 @@
 (function (ng, moment) {
     "use strict";
 
-    var module = ng.module("appointment.filters", []);
-    module.filter("specialist", ["$filter", function($filter) {
+    ng.module("appointment.filters", [])
+        .filter("specialist", ["$filter", function($filter) {
         return function(input, pattern) {
             if (!pattern) return input;
             pattern = pattern.toLowerCase();
@@ -17,9 +17,5 @@
                     || item.lastName.toLowerCase().indexOf(pattern) != -1;
             });
         }
-    }]).filter('stringToDate', function() {
-        return function(dateString, format) {
-            return moment(dateString, format).toDate();
-        };
-    });
+    }]);
 })(angular, moment);

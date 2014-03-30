@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html ng-app="appointment">
 <head>
+    <meta charset="utf-8" />
     <title>Расписание специалистов</title>
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bower_components/angular-formstamp/build/formstamp.css"/>
     <link rel="stylesheet" href="../bower_components/angular-bootstrap3-datepicker/dist/angular-bootstrap3-datepicker.css"/>
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="../css/app.css"/>
@@ -34,13 +36,13 @@
                 <h1 class="ln-page-title">Расписание специалистов</h1>
 
                 <div class="ln-page-actions btn-group">
-                    <button class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(1) }"
+                    <button type="button" class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(1) }"
                             ng-click="setDateSpan(1)">1 день
                     </button>
-                    <button class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(2) }"
+                    <button type="button" class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(2) }"
                             ng-click="setDateSpan(2)">2 дня
                     </button>
-                    <button class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(7) }"
+                    <button type="button" class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(7) }"
                             ng-click="setDateSpan(7)">Неделя
                     </button>
                 </div>
@@ -56,10 +58,11 @@
     </div>
 </div>
 
-<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
 <script src="../bower_components/angular-i18n/angular-locale_ru-ru.js"></script>
+<script src="../bower_components/angular-formstamp/build/formstamp.js"></script>
 <script src="../bower_components/momentjs/moment.js"></script>
 <script src="../bower_components/momentjs/lang/ru.js"></script>
 <script src="../bower_components/angular-bootstrap3-datepicker/dist/angular-bootstrap3-datepicker.js"></script>

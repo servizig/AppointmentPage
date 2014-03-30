@@ -5,11 +5,10 @@
     <input type="text" placeholder="Введите текст для поиска" class="form-control" ng-model="filterKeyword"/>
 </div>
 <div class="btn-group">
-    <button class="btn btn-xs btn-default" ng-class="{active: isView('bySpeciality')}"
+    <button type="button" class="btn btn-xs btn-default" ng-class="{active: isView('bySpeciality')}"
             ng-click="setView('bySpeciality')">По специальностям
     </button>
-    <button class="btn btn-xs btn-default" ng-class="{active: isView('byAlphabet')}" ng-click="setView('byAlphabet')">По
-        алфавиту
+    <button type="button" class="btn btn-xs btn-default" ng-class="{active: isView('byAlphabet')}" ng-click="setView('byAlphabet')">По алфавиту
     </button>
 </div>
 <div class="ln-accordeon">

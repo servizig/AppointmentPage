@@ -1,8 +1,8 @@
 (function (window, $, ng) {
     "use strict";
 
-    var app = ng.module("appointment.directives", []);
-    app.directive("hrShortName", function () {
+    ng.module("appointment.directives", [])
+        .directive("hrShortName", function () {
         return {
             restrict: "E",
             scope: {
@@ -19,9 +19,8 @@
                 specialityGroups: "=",
                 specialities: "="
             },
-            templateUrl: '/html/templates/specialist-selector.html',
+            templateUrl: 'templates/specialist-selector.html',
             controller: function ($scope) {
-                console.log($rootScope);
                 $scope.view = 'bySpeciality';
                 $scope.isView = function (name) {
                     return $scope.view === name;
@@ -85,7 +84,7 @@
                 schedules: "=items",
                 scrollParentSelector: "="
             },
-            templateUrl: '/html/templates/schedules.html',
+            templateUrl: 'templates/schedules.html',
             link: function (scope, element, attrs) {
                 var headers;
                 var maxHeight = 0;
@@ -156,9 +155,16 @@
                     $timeout(updateHeights, 1);
                 });
 
+                scope.getSlotClasses = function (slot) {
+                    var classes = [ 'ln-complex-resource-cell-' + slot.type ];
+                    if (slot.records !== undefined && slot.records.length > 0) {
+                        classes.push('ln-cell-has-records');
+                    }
+                    return classes;
+                };
+
                 $(element).on('click', ".ln-time-scroll", function(event) {
                     var $target= $(event.target);
-                    console.log("start time: ", $target.data("start-time"));
                     var timeElement = $target.parents(".ln-complex-resource")
                         .find(".ln-complex-resource-cell[data-start-time='" + $target.data("start-time") + "']");
                     // 235 - примерная высота фиксированного блока, лучше расчитывать динамически,
@@ -166,9 +172,63 @@
                     $(scope.scrollParentSelector).scrollTop(timeElement.offset().top - 235);
                 });
 
+                $(element).on('contextmenu', '.ln-complex-resource-cell-10', function (event) {
+                    event.preventDefault();
+                    $(".ln-selected").removeClass("ln-selected");
+
+                    var $contextMenuTarget = $(event.target);
+                    if ($contextMenuTarget.hasClass("time")
+                        || $contextMenuTarget.hasClass("ln-records-wrapper")) {
+                        $contextMenuTarget = $contextMenuTarget.parents(".ln-complex-resource-cell");
+                    }
+                    var $contextMenu = $('.ln-context-menu', element);
+                    var eventScope = ng.element($contextMenuTarget).scope();
+                    $(".ln-context-action", $contextMenu).hide();
+
+                    if (eventScope.record) {
+                        $(".ln-action-record-view", $contextMenu).show();
+                        $(".ln-action-record-change", $contextMenu).show();
+                        $(".ln-action-record-cancel", $contextMenu).show();
+                        $(".ln-action-record-cut", $contextMenu).show();
+                        $(".ln-action-record-copy", $contextMenu).show();
+                    }
+
+                    if (eventScope.slot && eventScope.slot.schedule.type === 1) {
+                        $(".ln-action-create", $contextMenu).show();
+                    }
+
+                    var offset = $(event.target).offset();
+
+                    var cursor = {
+                        y: event.clientY,
+                        x: event.clientX
+                    };
+                    var menu = {
+                        height: $contextMenu.height(),
+                        width: $contextMenu.width()
+                    };
+                    var w = {
+                        height: $(window).height(),
+                        width: $(window).width()
+                    };
+                    var position = {
+                        top: cursor.y - (cursor.y + menu.height > w.height ? menu.height + 20 : 0),
+                        left: cursor.x - (cursor.x + menu.width > w.width ? menu.width : 0)
+                    };
+                    $contextMenu.css(position).show();
+                    $contextMenuTarget.addClass("ln-selected");
+
+                    $(document).one('click', function (event) {
+                        $contextMenu.hide();
+                        $contextMenuTarget.removeClass("ln-selected");
+                    });
+                });
+
                 $(scope.scrollParentSelector).scroll(function () {
                     var scrollTop = $(this).scrollTop();
-                    console.log(scrollTop);
+                    $(".ln-complex-resource-spacer", element).css({
+                        top: scrollTop + "px"
+                    });
                     headers.css({
                         top: scrollTop + "px"
                     });
@@ -182,8 +242,6 @@
 
                     $.each(breakpoints, function (key, value) {
                         if (maxHeight - parseInt(key) < (scrollTop)) {
-                            console.log("key ", key);
-                            console.log("value ", value);
                             itemsToCollapse = itemsToCollapse.concat(value);
                         }
                     });

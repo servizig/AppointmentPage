@@ -51,7 +51,15 @@ var Appointment = Appointment || {};
         this.name = name;
     };
 
-    // TODO: add jsdoc
+    /**
+     * Создает экземпляр Quote (квота)
+     *
+     * @param {String} name название
+     * @param {Number} type тип
+     * @param {Appointment.TimeStamp || Date} startTime  время начала действия
+     * @param {Appointment.TimeStamp || Date} endTime время окончания действия
+     * @constructor
+     */
     Appointment.Quote = function (name, type, startTime, endTime) {
         this.name = name;
         this.type = type;
@@ -91,6 +99,7 @@ var Appointment = Appointment || {};
             throw new Error("Invalid schedule end work time: later than facility end work time");
         }
 
+        this.type = 1;
         this.specialist = specialist;
         this.place = place;
         this.date = date;
@@ -99,7 +108,17 @@ var Appointment = Appointment || {};
         this.scheduleStep = scheduleStep;
         this.quotes = quotes || [];
         this.records = records;
-        this.calculateSlots();
+        var cancellingQuote = this.specialist.cancellingQuotes.filter(function (quote) {
+            return quote.startTime <= date && quote.startTime >= date
+                || quote.endTime <= date && quote.endTime >= date;
+        })[0];
+        if (cancellingQuote === undefined) {
+            this.calculateSlots();
+        } else {
+            this.type = 2;
+            this.cancelReason = cancellingQuote.name;
+            this.fillCancellingSlots()
+        }
     };
 
     /**
@@ -116,13 +135,13 @@ var Appointment = Appointment || {};
                 ? scheduleStep.getTotalMinutes()
                 : timeStamp.getMinutes() % scheduleStep.getTotalMinutes();
             var percent = (timeStampMinutes / scheduleStep.getTotalMinutes()) * 100;
-            console.log("coeff: " + timeStamp, " minutes: " + timeStampMinutes, " step minutes: " + scheduleStep.getTotalMinutes(), " percent: " + percent);
             return percent >= (100 - facility.intersectAcceptance);
         };
 
         // 1 блок "Врач не принимает", если му работает раньше
         if (this.workBeginTime.compareTo(facility.workBeginTime) > 0) {
             this.slots.push({
+                schedule: self,
                 time: facility.workBeginTime,
                 type: 1
             });
@@ -130,6 +149,7 @@ var Appointment = Appointment || {};
         // 1 блок "Врач не принимает", если му работает позже
         if (this.workEndTime.compareTo(facility.workEndTime) < 0) {
             this.slots.push({
+                schedule: self,
                 time: this.workEndTime,
                 type: 1
             });
@@ -139,6 +159,7 @@ var Appointment = Appointment || {};
         var preSlots = [];
         for (var step = this.workBeginTime; step.compareTo(this.workEndTime) < 0; step = step.add(this.scheduleStep)) {
             preSlots.push({
+                schedule: self,
                 time: step,
                 type: 0
             });
@@ -187,6 +208,7 @@ var Appointment = Appointment || {};
             }
             // добавить в предварительный список слотов слот с квотой
             preSlots.push({
+                schedule: self,
                 time: quote.startTime,
                 type: 5,
                 reason: quote.name
@@ -251,6 +273,35 @@ var Appointment = Appointment || {};
     };
 
     /**
+     * Заполняет слоты записями, которые нужно отменить
+     */
+    Appointment.SpecialistPlaceDate.prototype.fillCancellingSlots = function () {
+        var slots = this.slots = [];
+        var self = this;
+
+        this.records.forEach(function (record) {
+            var slot = slots.filter(function (x) {
+                return x.time.equalsTo(record.timeStamp);
+            })[0];
+            if (slot === undefined) {
+                slot = {
+                    schedule: self,
+                    time: record.timeStamp,
+                    type: 10,
+                    records: []
+                };
+                slots.push(slot);
+            }
+            slot.records.push(record);
+        });
+
+        // сортировка блоков по времени
+        this.slots.sort(function (a, b) {
+            return a.time.compareTo(b.time)
+        });
+    };
+
+    /**
      * Создает экземляр Place (Место)
      *
      * @param {Appointment.MedicalFacility} facility медицинское учреждение
@@ -280,6 +331,13 @@ var Appointment = Appointment || {};
         this.intersectAcceptance = intersectAcceptance;
     };
 
+    /**
+     * Создает экземпляр Record (запись пациента)
+     * @param {Date} day день
+     * @param {Appointment.TimeStamp} timeStamp время
+     * @param {String} patientLastName ФИО пациента
+     * @constructor
+     */
     Appointment.Record = function (day, timeStamp, patientLastName) {
         this.day = day;
         this.timeStamp = timeStamp;
@@ -388,7 +446,17 @@ var Appointment = Appointment || {};
         }
     };
 
-    // TODO: add jsdoc
+    /**
+     * Определяет, какое время позже: текущий объект или other
+     * При проверке можно указать строго сравнивать или нет
+     * Например:
+     *     15:00.laterThan(15:00, true) => true
+     *     15:00.laterThan(15:00, false) => false
+     *
+     * @param  {Appointment.TimeStamp} other объект, с которым сравнивается текущий
+     * @param  {boolean} strict признак строгого сравнения
+     * @return {boolean} результат сравнения: true - текущий позже other, иначе false
+     */
     Appointment.TimeStamp.prototype.laterThan = function (other, strict) {
         if (strict) {
             return this.compareTo(other) >= 0;
@@ -397,7 +465,18 @@ var Appointment = Appointment || {};
         }
     };
 
-    // TODO: add jsdoc
+    /**
+     * Определяет принадлежность к промежутку времени
+     * При проверке можно указать, проверять ли границы промежутка.
+     * Например:
+     *     15:00 будет входить в промежуток [15:00, 16:00] если установлен признак includeBoundaries;
+     *     15:00 не будет входить в промежуток (15:00, 16:00) если признак не установлен
+     *
+     * @param  {Appointment.TimeStamp} startTime начало промежутка
+     * @param  {Appointment.TimeStamp} endTime окончание промежутка
+     * @param  {boolean} includeBoundaries признак включения границ промежутка в проверку
+     * @return {boolean} результат проверки: true - входит в промежуток, false - не входит в промежуток
+     */
     Appointment.TimeStamp.prototype.belongsTo = function (startTime, endTime, includeBoundaries) {
         if (includeBoundaries) {
             return startTime.compareTo(this) <= 0 && endTime.compareTo(this) >= 0;

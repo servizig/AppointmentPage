@@ -12,48 +12,52 @@
             };
 
             var loadSchedules = function (specialists) {
-                console.log("loading");
-                console.log(specialists);
                 var startDate = $scope.getSelectedDate();
                 scheduleService.load(specialists, startDate, moment(startDate).add('days', $scope.dateSpan).toDate())
                     .then(function (schedules) {
-                        console.log(schedules)
                         $scope.schedules = $scope.schedules.concat(schedules);
-                        console.log($scope.schedules);
                     });
             };
 
             // mock objects
+            var vacationQuote = new Appointment.Quote("Отпуск", 3, moment().startOf('day').add('d', 2).toDate(), moment().startOf('day').add('d', 3).toDate());
+            var illnessQuote = new Appointment.Quote("Врач на больничном", 3, moment().startOf('day').add('d', 2).toDate(), moment().startOf('day').add('d', 3).toDate());
+
             var specialityGroups = [];
             var specialities = [];
-            var specialists = [];
+
 
             var districtGroup = new Appointment.SpecialityGroup("Участковые специалисты");
             specialityGroups.push(districtGroup);
+
             var ldp = new Appointment.SpecialityGroup("Специалисты ЛДП");
             specialityGroups.push(ldp);
+
             var laboratory = new Appointment.SpecialityGroup("Лабораторные исследования и процедуры");
             specialityGroups.push(laboratory);
 
             var therapist = new Appointment.Speciality("1", "Терапевт", districtGroup);
             specialities.push(therapist);
+
             var pediatrician = new Appointment.Speciality("2", "Врач-Педиатр", districtGroup);
             specialities.push(pediatrician);
 
-            specialists.push(new Appointment.Specialist("Анатолий", "Борисович", "Петрова", therapist, []));
-            specialists.push(new Appointment.Specialist("Людмила", "Петровна", "Буланова", therapist, []));
-            specialists.push(new Appointment.Specialist("Анатолий", "Борисович", "Степанова", therapist, []));
-            specialists.push(new Appointment.Specialist("Анатолий", "Борисович", "Арончиков", therapist, []));
-            specialists.push(new Appointment.Specialist("Анатолий", "Борисович", "Арончиков", pediatrician, []));
+            $scope.specialists = [
+                new Appointment.Specialist("Анна", "Ивановна", "Петрова", therapist, [illnessQuote]),
+                new Appointment.Specialist("Людмила", "Петровна", "Буланова", therapist, [vacationQuote]),
+                new Appointment.Specialist("Зинаида", "Марковна", "Степанова", therapist, [illnessQuote]),
+                new Appointment.Specialist("Степан", "Игоревич", "Иванов", therapist, [vacationQuote]),
+                new Appointment.Specialist("Анатолий", "Борисович", "Арончиков", pediatrician, [illnessQuote])
+            ];
 
-            $scope.specialists = specialists;
             $scope.specialities = specialities;
             $scope.specialityGroups = specialityGroups;
+            // end mock objects
+
             $scope.schedules = [];
             var previouslySelectedLength = 0;
 
             $rootScope.$on("specialists.selected", function (event, specialists) {
-                console.log("selected");
                 var actuallySelected = $scope.getActuallySelectedSpecialists();
                 if (previouslySelectedLength == 0 && actuallySelected.length > 0) {
                     $scope.schedules = [];
@@ -65,8 +69,6 @@
             });
 
             $rootScope.$on("specialists.deselected", function (event, specialists) {
-                console.log("deselected");
-                console.log(specialists);
                 var actuallySelectedLength = $scope.getActuallySelectedSpecialists().length;
                 if (actuallySelectedLength == 0) {
                     $scope.schedules = [];
@@ -115,8 +117,6 @@
             };
 
             $scope.scheduleComparer = function (a, b) {
-                console.log(a);
-                console.log(b);
                 return 0;
             };
 
