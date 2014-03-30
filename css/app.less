@@ -4,6 +4,7 @@
 @font-size-small: 12px;
 @border-style: 1px solid #DADADB;
 
+// Общая верстка
 html {
   font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   font-size: @font-size-base;
@@ -39,8 +40,10 @@ body {
   z-index: 500;
 }
 
+
 #ln-page-wrapper {
 
+  // Левая панель
   #ln-left-panel {
     position: absolute;
     top: @page-header-height;
@@ -121,6 +124,7 @@ body {
     }
   }
 
+  // Сетка расписания
   #ln-content-panel {
     position: absolute;
     top: @page-header-height;
@@ -172,6 +176,7 @@ body {
   position: fixed;
 }
 
+// Расписание (Специалист-Место-Дата)
 .ln-complex-resource {
   display: inline-block;
   width: 150px;
@@ -194,6 +199,7 @@ body {
     }
   }
 
+  // Рабочий день
   &.ln-complex-resource-1 {
 
     .ln-complex-resource-schedule {
@@ -205,6 +211,7 @@ body {
     }
   }
 
+  // Нерабочий день
   &.ln-complex-resource-2 {
     background-color: #F6DDD6;
     border-left: 2px solid #D15531;
@@ -261,6 +268,7 @@ body {
     }
   }
 
+  // Слот расписания
   .ln-complex-resource-cell-10 {
 
     &:hover {
