@@ -3,8 +3,8 @@
 
     ng.module("appointment.controllers", [])
         .controller("AppointmentCtrl", [
-            "$rootScope", "$filter", "$scope", "ScheduleService", "MomentService",
-            function ($rootScope, $filter, $scope, scheduleService, moment) {
+            "$filter", "$scope", "ScheduleService", "MomentService", "MODEL",
+            function ($filter, $scope, scheduleService, moment, model) {
 
                 var reloadSchedules = function () {
                     $scope.schedules = [];
@@ -20,6 +20,9 @@
                 };
 
                 // mock objects
+                $scope.currentUser = {
+                    facility: model.facilities[0]
+                };
                 var vacationQuote = new Appointment.Quote("Отпуск", 3, moment().startOf('day').add('d', 2).toDate(), moment().startOf('day').add('d', 3).toDate());
                 var illnessQuote = new Appointment.Quote("Врач на больничном", 3, moment().startOf('day').add('d', 2).toDate(), moment().startOf('day').add('d', 3).toDate());
 
@@ -110,7 +113,7 @@
 
                 $scope.getActuallySelectedSpecialists = function () {
                     return $filter('filter')($scope.specialists, {selected: true});
-                }
+                };
 
                 $scope.getSelectedSpecialists = function () {
                     var actuallySelected = $scope.getActuallySelectedSpecialists();

@@ -2,8 +2,8 @@
     "use strict";
     ng.module("appointment.services", [])
         .factory("ScheduleService", [
-            "$q", "MomentService",
-            function ($q, moment) {
+            "$q", "MomentService", "MODEL",
+            function ($q, moment, model) {
                 return {
                     load: function (specialists, beginDate, endDate) {
                         var beginDateMoment = moment(beginDate);
@@ -12,11 +12,7 @@
                         // симуляция загрузки расписания с сервера
                         var beginTime = new Appointment.TimeStamp(8, 0);
                         var endTime = new Appointment.TimeStamp(20, 0);
-                        var facilities = [
-                            new Appointment.MedicalFacility("ГП", "128", beginTime, endTime, 20),
-                            new Appointment.MedicalFacility("ГП", "18", beginTime, endTime, 20),
-                            new Appointment.MedicalFacility("Травм Пункт ГП", "128", beginTime, endTime, 20),
-                        ];
+                        var facilities = model.facilities;
                         var deferred = $q.defer();
                         var result = [];
                         var quotes1 = [

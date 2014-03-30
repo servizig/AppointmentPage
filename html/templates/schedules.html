@@ -33,7 +33,7 @@
                             ({{ quote.name }}
                             <button class="ln-time-scroll" data-start-time="{{ quote.startTime.toString() }}">{{ quote.startTime.toString() }}-{{ quote.endTime.toString() }}</button>)
                         </div>
-                        <button class="btn btn-success btn-add-queue-record">Записать в живую очередь</button>
+                        <button class="btn btn-success btn-add-queue-record" ng-show="isAvailableToRecord(schedule)">Записать в живую очередь</button>
                     </div>
                 </div>
                 <div class="ln-collapsed">

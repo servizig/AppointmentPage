@@ -59,7 +59,6 @@
                             }
                             item.selected = speciality.selected;
                         });
-                        console.log(actuallyChanged)
                         if (speciality.selected && $scope.onSelected) $scope.onSelected()(actuallyChanged);
                         if (!speciality.selected && $scope.onDeselected) $scope.onDeselected()(actuallyChanged);
                     };
@@ -86,9 +85,23 @@
                 restrict: "AE",
                 scope: {
                     schedules: "=items",
-                    scrollParentSelector: "="
+                    scrollParentSelector: "=",
+                    currentUser: "="
                 },
                 templateUrl: 'templates/schedules.html',
+                controller: function($scope) {
+                    $scope.isAvailableToRecord = function(schedule) {
+                        return $scope.currentUser.facility.shortName === schedule.place.facility.shortName;
+                    };
+
+                    $scope.getSlotClasses = function (slot) {
+                        var classes = [ 'ln-complex-resource-cell-' + slot.type ];
+                        if (slot.records !== undefined && slot.records.length > 0) {
+                            classes.push('ln-cell-has-records');
+                        }
+                        return classes;
+                    };
+                },
                 link: function (scope, element, attrs) {
                     var headers;
                     var maxHeight = 0;
@@ -158,14 +171,6 @@
                         // для корректного расчета высоты блоков
                         $timeout(updateHeights, 1);
                     });
-
-                    scope.getSlotClasses = function (slot) {
-                        var classes = [ 'ln-complex-resource-cell-' + slot.type ];
-                        if (slot.records !== undefined && slot.records.length > 0) {
-                            classes.push('ln-cell-has-records');
-                        }
-                        return classes;
-                    };
 
                     $(element).on('click', ".ln-time-scroll", function (event) {
                         var $target = $(event.target);
