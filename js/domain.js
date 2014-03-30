@@ -67,12 +67,20 @@ var Appointment = Appointment || {};
         this.endTime = endTime;
     };
 
-    // TODO: add jsdoc
+    /**
+     * Возвращает признак принадлежности квоты к запрещающим
+     *
+     * @returns {boolean}
+     */
     Appointment.Quote.prototype.isProhibiting = function () {
         return this.type === 2;
     };
 
-    // TODO: add jsdoc
+    /**
+     * Возвращает признак принадлежности квоты к разрешающим
+     *
+     * @returns {boolean}
+     */
     Appointment.Quote.prototype.isAllowing = function () {
         return this.type === 1;
     };
@@ -363,7 +371,12 @@ var Appointment = Appointment || {};
      */
     Appointment.TimeStamp.MAX_VALUE = 24 * 60 - 1;
 
-    // TODO: add jsdoc
+    /**
+     * Прибавляет к текущему времени указанное время. Возвращает новый объект.
+     *
+     * @param other время, которое нужно прибавить
+     * @returns {Appointment.TimeStamp} прибавленное время
+     */
     Appointment.TimeStamp.prototype.add = function (other) {
         return this.addMinutes(other._minutesCount);
     };
@@ -393,17 +406,31 @@ var Appointment = Appointment || {};
         return newTimeStamp;
     };
 
-    // TODO: add jsdoc
+    /**
+     * Возвращает часы текущего времени
+     *
+     * @returns {number}
+     */
     Appointment.TimeStamp.prototype.getHours = function () {
         return Math.floor(this._minutesCount / 60);
     };
 
-    // TODO: add jsdoc
+    /**
+     * Возвращает минуты текущего времени
+     *
+     * @returns {number}
+     */
     Appointment.TimeStamp.prototype.getMinutes = function () {
         return this._minutesCount % 60;
     };
 
-    // TODO: add jsdoc
+    /**
+     * Возвращает полное количество минут текущего времени
+     * Например:
+     *      4:00.getTotalMinutes() => 240
+     *
+     * @returns {number}
+     */
     Appointment.TimeStamp.prototype.getTotalMinutes = function () {
         return this._minutesCount;
     };
@@ -437,7 +464,17 @@ var Appointment = Appointment || {};
         return this.compareTo(other) === 0;
     };
 
-    // TODO: add jsdoc
+    /**
+     * Определяет, какое время раньше: текущий объект или other
+     * При проверке можно указать строго сравнивать или нет
+     * Например:
+     *     15:00.earlierThan(15:00, true) => true
+     *     15:00.earlierThan(15:00, false) => false
+     *
+     * @param  {Appointment.TimeStamp} other объект, с которым сравнивается текущий
+     * @param  {boolean} strict признак строгого сравнения
+     * @return {boolean} результат сравнения: true - текущий раньше other, иначе false
+     */
     Appointment.TimeStamp.prototype.earlierThan = function (other, strict) {
         if (strict) {
             return this.compareTo(other) <= 0;
