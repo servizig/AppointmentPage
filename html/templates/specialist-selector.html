@@ -1,0 +1,52 @@
+<div class="ln-filter-block-title">Специалисты
+    <small>({{ getSelected().length }}/{{ specialists.length }})</small>
+</div>
+<div class="ln-input-wrapper">
+    <input type="text" placeholder="Введите текст для поиска" class="form-control" ng-model="filterKeyword"/>
+</div>
+<div class="btn-group">
+    <button class="btn btn-xs btn-default" ng-class="{active: isView('bySpeciality')}"
+            ng-click="setView('bySpeciality')">По специальностям
+    </button>
+    <button class="btn btn-xs btn-default" ng-class="{active: isView('byAlphabet')}" ng-click="setView('byAlphabet')">По
+        алфавиту
+    </button>
+</div>
+<div class="ln-accordeon">
+    <div ng-switch on="view">
+        <div ng-switch-when="bySpeciality">
+            <div ng-repeat="group in specialityGroups">
+                <div class="ln-accordeon-title">
+                    {{ group.name }}
+                </div>
+                <div class="ln-accordeon-content">
+                    <div ng-repeat="speciality in getSpecialities(group)">
+                        <label class="checkbox ln-human-resource-all">
+                            <input type="checkbox" ng-model="speciality.selected"
+                                   ng-change="toggleSpecialists(speciality)"/>
+                            <span>{{ speciality.name }}</span>
+                        </label>
+                        <ul class="list-unstyled ln-human-resource-list">
+                            <li ng-repeat="hr in getSpecialists(speciality) | specialist:filterKeyword">
+                                <label class="checkbox">
+                                    <input type="checkbox" ng-model="hr.selected"
+                                           ng-change="checkSelectAll(hr, speciality)"/>
+                                    <hr-short-name name="hr"></hr-short-name>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-switch-when="byAlphabet" class="ln-accordeon-content">
+            <div ng-repeat="hr in getSpecialists() | specialist:filterKeyword | orderBy:'lastName':reverse">
+                <label class="checkbox">
+                    <input type="checkbox" ng-model="hr.selected"
+                           ng-change="checkSelectAll(hr, hr.speciality)"/>
+                    <hr-short-name name="hr"></hr-short-name>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

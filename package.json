@@ -1,0 +1,14 @@
+{
+    "name": "AppointmentPage",
+    "version": "0.0.1",
+    "description": "Прототип страницы сетки записи на прием в ЛПУ",
+    "author": "Byte Force <http://byte-force.com>",
+    "devDependencies": {
+        "gulp": "^3.5.6",
+        "connect-livereload": "^0.3.2",
+        "tiny-lr": "0.0.5",
+        "gulp-livereload": "^1.2.0",
+        "connect": "^2.14.2",
+        "gulp-less": "^1.2.3"
+    }
+}

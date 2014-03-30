@@ -1,0 +1,30 @@
+{
+  "name": "AppointmentPage",
+  "version": "0.0.1",
+  "description": "Прототип страницы сетки записи на прием в ЛПУ",
+  "author": "Byte Force <http://byte-force.com>",
+  "moduleType": [
+    "amd"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.0",
+    "angular": "~1.2.14",
+    "normalize.css": "~3.0.0",
+    "bootstrap": "~3.1.1",
+    "angular-i18n": "~1.2.15",
+    "font-awesome": "~4.0.3",
+    "angular-bootstrap3-datepicker": "~0.1.0"
+  },
+  "resolutions": {
+    "jquery": "~2.1.0",
+    "bootstrap": "~3.1.1"
+  }
+}

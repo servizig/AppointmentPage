@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html ng-app="appointment">
+<head>
+    <title>Расписание специалистов</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="../bower_components/angular-bootstrap3-datepicker/dist/angular-bootstrap3-datepicker.css"/>
+    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="../css/app.css"/>
+</head>
+<body>
+<header class="ln-page-header"></header>
+<div id="ln-page-wrapper" ng-controller="AppointmentCtrl">
+    <div id="ln-left-panel">
+
+        <div class="ln-filter-block ln-expanded ln-date-selector">
+            <div class="ln-filter-block-title">
+                Дата записи
+                <small>{{ selectedDate }}</small>
+            </div>
+            <div class="">
+                <datepicker ng-model="selectedDate" placeholder="ДД.ММ.ГГГГ" date-format="DD.MM.YYYY"></datepicker>
+            </div>
+        </div>
+        <div class="ln-filter-block ln-expanded"
+             specialist-selector
+             specialists="specialists"
+             specialities="specialities"
+             speciality-groups="specialityGroups"></div>
+    </div>
+    <div id="ln-content-panel">
+        <div class="ln-content-wrapper">
+            <div class="ln-content-title">
+                <h1 class="ln-page-title">Расписание специалистов</h1>
+
+                <div class="ln-page-actions btn-group">
+                    <button class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(1) }"
+                            ng-click="setDateSpan(1)">1 день
+                    </button>
+                    <button class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(2) }"
+                            ng-click="setDateSpan(2)">2 дня
+                    </button>
+                    <button class="btn btn-xs btn-success" ng-class="{ active: isDateSpan(7) }"
+                            ng-click="setDateSpan(7)">Неделя
+                    </button>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="ln-content-scroll">
+                <div class="ln-content">
+                    <schedules items="schedules"
+                            scroll-parent-selector="'.ln-content-scroll'"></schedules>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/angular-i18n/angular-locale_ru-ru.js"></script>
+<script src="../bower_components/momentjs/moment.js"></script>
+<script src="../bower_components/momentjs/lang/ru.js"></script>
+<script src="../bower_components/angular-bootstrap3-datepicker/dist/angular-bootstrap3-datepicker.js"></script>
+<script src="../js/polyfills.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/domain.js"></script>
+<script src="../js/services.js"></script>
+<script src="../js/controllers.js"></script>
+<script src="../js/directives.js"></script>
+<script src="../js/filters.js"></script>
+</body>
+</html>

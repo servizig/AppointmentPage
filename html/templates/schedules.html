@@ -1,0 +1,45 @@
+<div class="ln-complex-resource-wrapper">
+    <div class="ln-complex-resource expanded"
+         ng-repeat="schedule in schedules | orderBy : ['date', 'place.facility.shortName']">
+        <div class="ln-complex-resource-header">
+            <div class="ln-complex-resource-day">{{ schedule.date | date:"EEE. dd MMM" }}</div>
+            <div class="ln-complex-resource-name">
+                <hr-short-name name="schedule.specialist"></hr-short-name>
+            </div>
+            <div class="ln-complex-resource-speciality">{{ schedule.specialist.speciality.name }}</div>
+            <div class="ln-complex-resource-place">
+                {{ schedule.place.facility.shortName }}
+                №{{ schedule.place.facility.number }},
+                (к.{{ schedule.place.roomNumber }})
+            </div>
+            <div class="ln-complex-resource-schedule">
+                <div class="ln-expanded">
+                    <div>
+                        <button class="ln-time-scroll" data-start-time="{{ schedule.workBeginTime.toString() }}">{{ schedule.workBeginTime.toString() }}-{{schedule.workEndTime.toString() }}</button>
+                        <div ng-repeat="quote in schedule.quotes">
+                            ({{ quote.name }}
+                            <button class="ln-time-scroll" data-start-time="{{ quote.startTime.toString() }}">{{ quote.startTime.toString() }}-{{ quote.endTime.toString() }}</button>)
+                        </div>
+                        <button class="btn btn-success btn-add-queue-record">Записать в живую очередь</button>
+                    </div>
+                </div>
+                <div class="ln-collapsed">
+                    Врач работает
+                </div>
+            </div>
+        </div>
+        <div class="ln-complex-resource-body">
+            <div class="ln-complex-resource-cell" ng-class="'ln-complex-resource-cell-' + slot.type" ng-repeat="slot in schedule.slots" data-start-time="{{ slot.time.toString() }}">
+
+                <span ng-show="slot.type == 1">Врач не принимает</span>
+                <span ng-show="slot.type == 5">{{slot.reason }}</span>
+                <div ng-show="slot.type == 10">
+                    <span class="time">{{ slot.time.toString() }}</span>
+                    <div class="ln-record" ng-repeat="record in slot.records" ng-style="{ width: 110 / slot.records.length + 'px'}">
+                        {{ record.patientName }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

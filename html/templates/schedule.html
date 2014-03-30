@@ -1,0 +1,28 @@
+<div class="ln-complex-resource-header">
+    <div class="ln-complex-resource-day">{{ item.date | date:"EEE. dd MMM" }}</div>
+    <div class="ln-complex-resource-name">
+        <hr-short-name name="item.specialist"></hr-short-name>
+    </div>
+    <div class="ln-complex-resource-speciality">{{ item.specialist.speciality.name }}</div>
+    <div class="ln-complex-resource-place">
+        {{ item.place.facility.shortName }}
+        №{{ item.place.facility.number }},
+        (к.{{ item.place.roomNumber }})
+    </div>
+    <div class="ln-complex-resource-schedule">
+        <div>{{ item.workBeginTime.toString() }}-{{item.workEndTime.toString() }}
+            <div ng-repeat="quote in item.quotes">
+                ({{ quote.name }} {{ quote.startTime.toString() }}-{{ quote.endTime.toString() }})
+            </div>
+            <button class="btn btn-success btn-add-queue-record">Записать в живую очередь</button>
+        </div>
+    </div>
+</div>
+<div class="ln-complex-resource-body">
+    <div class="ln-complex-resource-cell" ng-repeat="slot in item.slots">
+        <span class="time">{{ slot.time.toString() }}</span>
+        <span ng-show="slot.type == 1">Врач не принимает</span>
+        <span ng-show="slot.type == 5">{{slot.reason }}</span>
+        <span ng-show="slot.type == 10">Запись</span>
+    </div>
+</div>
