@@ -286,7 +286,7 @@ body {
   cursor: pointer;
 }
 .ln-complex-resource .ln-complex-resource-cell {
-  border-bottom: 1px dashed #000;
+  border-bottom: 1px dotted #000;
   background-color: #E8E8EB;
   padding: 0 5px;
   height: 20px;
